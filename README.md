@@ -10,6 +10,7 @@ Currently, it just tracks challenges and looks neat. I will be updating it with 
   - Possible: Sync across devices? (TODO)
 
 ## TODO
+- Fix displaying on github pages url, find an actual domain to host this.
 - Modify editing workflow to be easier to use for quick edits.
 - Add tags to sort and organize challenges.
 - Use the deadline to show more importance on upcoming tasks.
