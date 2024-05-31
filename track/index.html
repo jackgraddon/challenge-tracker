@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Achievment Tracker</title>
+    <!-- Vue -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- Styles -->
+    <link rel="stylesheet" href="/styles/main.css">
+</head>
+<body data-theme="light-red">
+    <main>
+        <header>
+            <nav>
+                <ul>
+                    <li v-for="(page, index) in pages" :key="index">
+                        <a
+                        :class="{active: activePage == index}"
+                        :href="page.link.url"
+                        :title="`This link goes to ${page.link.text}`"
+                        >{{ page.link.text }}</a>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+        <div class="container" id="tracker-wrapper">
+            <h1>Tracker</h1>
+            <button class="btn-accent" @click="openModal">Add Contract</button>
+            <!-- Contracts -->
+            <div class="contract" v-if="contracts.length == 0">
+                <h2>No Contracts</h2>
+                <p>There are no contracts to track. Click the button above to add a contract.</p>
+            </div>
+            <div class="contract" v-for="(contract, index) in contracts" :key="index">
+                <h2>{{ contract.name }}</h2>
+                <p>{{ contract.description }}</p>
+                <div class="progress-bar">
+                    <span>{{ contract.current }} / {{ contract.amount }}</span>
+                    <progress :value="contract.current" :max="contract.amount"></progress>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button class="btn-bg" @click="editContract(index)">Edit Contract</button>
+                    <button class="btn-bg" @click="removeContract(index)">Remove Contract</button>
+                </div>
+            </div>
+            <!-- Modal -->
+            <div v-if="showCreateContractModal" class="modal" @click="closeModal">
+                <div class="modal-content" @click.stop>
+                    <h2>Add a Contract</h2>
+                    <p>To keep track of a new contract, fill out its details below.</p>
+                    <label for="contract-name">Contract name</label>
+                    <input type="text" name="contract-name" id="contract-name"
+                    v-model="newContract.name"
+                    placeholder="Close Combat">
+                    <label for="contract-description">Contract Description</label>
+                    <input type="text" name="contract-description" id="contract-description"
+                    v-model="newContract.description"
+                    placeholder="Eliminate 1 opponent using Quick Melee	">
+                    <label for="contract-amount">Total Count</label>
+                    <input type="number" name="contract-amount" id="contract-amount"
+                    v-model="newContract.amount">
+                    <label for="contract-current">Current Count</label>
+                    <input type="number" name="contract-current" id="contract-current"
+                    v-model="newContract.current">
+                    <label for="contract-deadline">Deadline</label>
+                    <input type="date" name="contract-deadline" id="contract-deadline"
+                    v-model="newContract.deadline">
+                    <div style="display: flex; gap: 1rem;">
+                        <button @click="updateContract">Create</button>
+                        <button @click="closeModal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Data -->
+    <script>
+        // Grab contracts from browser storage
+        let contracts = localStorage.getItem('contracts');
+        if (contracts === null) {
+            contracts = [];
+        } else {
+            contracts = JSON.parse(contracts);
+        }
+
+        // Create a Vue instance
+        const tracker = Vue.createApp({
+            data() {
+                return {
+                    showCreateContractModal: false, // Initially hide the modal
+                    contracts: contracts,
+                    newContract: {
+                        name: '',
+                        description: '',
+                        amount: 0,
+                        current: 0,
+                        deadline: new Date().toISOString().substr(0, 10)
+                    }
+                }
+            },
+            methods: {
+                openModal() {
+                    this.showCreateContractModal = true;
+                },
+                closeModal() {
+                    this.showCreateContractModal = false;
+                },
+                removeContract(index) {
+                    this.contracts.splice(index, 1);
+
+                    // Save the updated contracts
+                    this.saveContract();
+                },
+                editContract(index) {
+                    // Open the modal
+                    this.showCreateContractModal = true;
+
+                    // Set the index of the contract being edited
+                    this.editingContractIndex = index;
+
+                    // Bind the values of the contract at the given index to the newContract object
+                    const contract = this.contracts[index];
+                    this.newContract.name = contract.name;
+                    this.newContract.description = contract.description;
+                    this.newContract.amount = contract.amount;
+                    this.newContract.current = contract.current;
+                    this.newContract.deadline = contract.deadline;
+
+                    // Save the updated contracts
+                    this.saveContract();
+                },
+                updateContract() {
+                    // Validate the updated contract (name, description, amount, deadline)
+                    if (this.newContract.name === '' || this.newContract.description === '' || this.newContract.amount <= 0 || this.newContract.deadline === '') {
+                        alert('Please fill in all fields.');
+                        return;
+                    }
+
+                    // Update the contract at the specified index
+                    const contractIndex = this.editingContractIndex;
+                    if (contractIndex >= 0 && contractIndex < this.contracts.length) {
+                        this.contracts[contractIndex].name = this.newContract.name;
+                        this.contracts[contractIndex].description = this.newContract.description;
+                        this.contracts[contractIndex].amount = this.newContract.amount;
+                        this.contracts[contractIndex].current = this.newContract.current;
+                        this.contracts[contractIndex].deadline = this.newContract.deadline;
+                    } else {
+                        this.contracts.push({
+                            name: this.newContract.name,
+                            description: this.newContract.description,
+                            amount: this.newContract.amount,
+                            current: this.newContract.current,
+                            deadline: this.newContract.deadline
+                        });
+                    }
+
+                    // Reset the new contract fields
+                    this.newContract.name = '';
+                    this.newContract.description = '';
+                    this.newContract.amount = 0;
+                    this.newContract.current = 0;
+                    this.newContract.deadline = '';
+
+                    // Hide the modal
+                    this.closeModal();
+
+                    // Save the updated contracts
+                    this.saveContract();
+                },
+                saveContract() {
+                    // Convert contracts array to JSON string
+                    const contractsJson = JSON.stringify(this.contracts);
+
+                    // Store contracts in browser local storage
+                    localStorage.setItem('contracts', contractsJson);
+                }
+            }
+        });
+
+        tracker.mount('#tracker-wrapper');
+    </script>
+    <!-- Header -->
+    <script>
+        let header = Vue.createApp({
+            data() {
+                return {
+                    activePage: 1,
+                    pages: [
+                        {
+                            link: {text: 'Home', url: '/'},
+                            title: 'Home',
+                            content: "Stats and stuff go here!",
+                        },
+                        {
+                            link: {text: 'Track', url: '/track/'},
+                            title: 'Track Your Challenges',
+                            content: "Can track your challenges here!",
+                        },
+                        {
+                            link: {text: 'Account', url: '/account/'},
+                            title: 'Account',
+                            content: "Configure browser settings here",
+                        },
+                    ],
+                };
+            }
+        })
+        
+        header.mount('header');
+    </script>
+    <!-- Theme -->
+    <script src="/scripts/theme.js"></script>
+</body>
+</html>

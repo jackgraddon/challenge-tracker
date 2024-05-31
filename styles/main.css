@@ -1,0 +1,156 @@
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@200..900&display=swap');
+
+/* Reset */
+html {
+    box-sizing: border-box;
+    font-size: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: "Unbounded", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 1rem;
+    /* Fade colors between theme switching */
+    transition: 300ms background-color, 300ms color;
+}
+
+:root {
+    --color-dark: #353B3C;
+    --color-light: #F9F5E3;
+    --color-red: #E71D36;
+    --color-green: #53917E;
+    --color-blue: #08415C;
+
+}
+
+/* Palette Theme */
+body, body[data-theme^="light"] {
+    --color-bg: var(--color-light);
+    --color-text: var(--color-dark);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+}
+body[data-theme^="dark"] {
+    --color-bg: var(--color-dark);
+    --color-text: var(--color-light);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+}
+/* Color Themes */
+body[data-theme*="red"] {
+    --color-accent: var(--color-red);
+}
+body[data-theme*="green"] {
+    --color-accent: var(--color-green);
+}
+body[data-theme*="blue"] {
+    --color-accent: var(--color-blue);
+}
+
+/* Header */
+header {
+    padding: 1rem;
+    background-color: var(--color-accent);;
+}
+header nav ul {
+    display: flex;
+    padding: 0 15px;
+    gap: 15px;
+    list-style: none;
+}
+header nav ul li a {
+    font-weight: 400;
+    color: var(--color-light);
+    text-decoration: none;
+    cursor: pointer;
+}
+header nav ul li:last-child {
+    margin-left: auto;
+}
+header nav ul li a:hover {
+    text-decoration: underline;
+}
+header nav ul li a.active {
+    font-weight: 700;
+}
+
+/* Page */
+div.container {
+    padding: 1rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Modal */
+div.modal {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+div.modal div.modal-content {
+    padding: 1rem;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    border-radius: 7pt;
+    width: 80%;
+    max-width: 450px;
+}
+div.modal div.modal-content h2 {
+    margin: 0;
+}
+
+/* Inputs */
+input[type="text"], input[type="number"], input[type="password"], input[type="email"], input[type="date"], input[type="time"], input[type="url"], input[type="tel"], input[type="search"], input[type="color"], input[type="range"], input[type="file"], textarea {
+    padding: 0.5rem;
+    border: 1px solid var(--color-accent);
+    border-radius: 7pt;
+    margin: 0.5rem 0;
+    width: calc(100% - 1rem);
+}
+
+/* Buttons */
+button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 7pt;
+    cursor: pointer;
+    margin: 0.5rem 0;
+}
+button.btn-bg {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+}
+button.btn-accent {
+    background-color: var(--color-accent);
+    color: var(--color-light);
+}
+
+/* Contract */
+div.contract {
+    padding: 1rem;
+    background-color: var(--color-accent);
+    color: var(--color-light);
+    border-radius: 7pt;
+    margin: 1rem 0;
+}
+div.contract h2, div.contract p {
+    margin: 0;
+}
+
+div.contract div.progress-bar {
+    width: 100%;
+    margin-top: 1rem;
+}
+div.contract div.progress-bar progress {
+    width: 100% !important;
+}

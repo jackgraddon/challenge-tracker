@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Achievment Tracker</title>
+    <!-- Vue -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- Styles -->
+    <link rel="stylesheet" href="/styles/main.css">
+</head>
+<body data-theme="light-red">
+    <main>
+        <header>
+            <nav>
+                <ul>
+                    <li v-for="(page, index) in pages" :key="index">
+                        <a
+                        :class="{active: activePage == index}"
+                        :href="page.link.url"
+                        :title="`This link goes to ${page.link.text}`"
+                        >{{ page.link.text }}</a>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+        <div class="container">
+            <h1>Tracker</h1>
+        </div>
+    </main>
+    
+    <!-- Page -->
+    <script>
+        let app = Vue.createApp({
+            data() {
+                return {
+                    activePage: 0,
+                    pages: [
+                        {
+                            link: {text: 'Home', url: '/'},
+                            title: 'Home',
+                            content: "Stats and stuff go here!",
+                        },
+                        {
+                            link: {text: 'Track', url: '/track/'},
+                            title: 'Track Your Challenges',
+                            content: "Can track your challenges here!",
+                        },
+                        {
+                            link: {text: 'Account', url: '/account/'},
+                            title: 'Account',
+                            content: "Configure browser settings here",
+                        },
+                    ],
+                };
+            }
+        })
+
+        app.component('page-content', {
+            props: ['page'],
+            template: `
+            <div>
+                <h1>{{page.title}}</h1>
+                <p>{{page.content}}</p>
+            </div>
+            `
+        })
+        
+        app.mount('main');
+    </script>
+    <!-- Scripts -->
+    <script src="/scripts/theme.js"></script>
+</body>
+</html>
