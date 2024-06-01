@@ -6,7 +6,7 @@ Currently, it just tracks challenges and looks neat. I will be updating it with 
 - Track number-based challenges (e.g., 50/100).
 - Name and describe challenges to keep track of them.
 - Stores all info in browser storage.
-- Export challenge data to load on a different device. (TODO)
+- Export challenge data to load on a different device.
   - Possible: Sync across devices? (TODO)
 
 ## TODO
