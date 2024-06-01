@@ -45,8 +45,8 @@
                 </div>
             </div>
             <!-- Modal -->
-            <div v-if="showCreateContractModal" class="modal" @click="closeModal">
-                <div class="modal-content" @click.stop>
+            <div v-if="showCreateContractModal" class="modal">
+                <div class="modal-content">
                     <h2>Add a Contract</h2>
                     <p>To keep track of a new contract, fill out its details below.</p>
                     <label for="contract-name">Contract name</label>
@@ -66,6 +66,8 @@
                     <label for="contract-deadline">Deadline</label>
                     <input type="date" name="contract-deadline" id="contract-deadline"
                     v-model="newContract.deadline">
+                    <label for="contract-tags">Tags</label>
+                    <input type="text" name="contract-tags" id="contract-tags" v-model="newContract.tags" placeholder="Seperate,each tag,with a comma">
                     <div style="display: flex; gap: 1rem;">
                         <button class="btn-accent" @click="updateContract">Create</button>
                         <button class="btn-accent" @click="closeModal">Cancel</button>
@@ -96,7 +98,8 @@
                         description: '',
                         amount: 0,
                         current: 0,
-                        deadline: new Date().toISOString().substr(0, 10)
+                        deadline: new Date().toISOString().substr(0, 10),
+                        tags: []
                     }
                 }
             },
@@ -146,13 +149,15 @@
                         this.contracts[contractIndex].amount = this.newContract.amount;
                         this.contracts[contractIndex].current = this.newContract.current;
                         this.contracts[contractIndex].deadline = this.newContract.deadline;
+                        this.contracts[contractIndex].tags = this.newContract.tags.split(',').map(tag => tag.trim());
                     } else {
                         this.contracts.push({
                             name: this.newContract.name,
                             description: this.newContract.description,
                             amount: this.newContract.amount,
                             current: this.newContract.current,
-                            deadline: this.newContract.deadline
+                            deadline: this.newContract.deadline,
+                            tags: this.newContract.tags.split(',').map(tag => tag.trim())
                         });
                     }
 
