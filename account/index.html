@@ -26,7 +26,18 @@
         </header>
         <div class="container" id="account-wrapper">
             <h1>Account</h1>
-            <div style="display: flex; gap: 1rem;">
+            <p>Manage your settings here! Currently there is no 'account' for this site.</p>
+            <h2>Styling</h2>
+            <div class="palette-dropdown">
+                <label for="palette-select">Select a color palette for the site to use.</label>
+                <select id="palette-select" v-model="selectedColor" @change="savePalette">
+                    <option value="red">Red</option>
+                    <option value="green">Green</option>
+                    <option value="blue">Blue</option>
+                </select>
+            </div>
+            <h2>Contracts</h2>
+            <div class="simple-row">
                 <button class="btn-accent" @click="exportContracts">Export Contracts</button>
                 <button class="btn-accent" @click="loadContracts">Load Contracts</button>
                 <button class="btn-accent" @click="deleteAllContracts">Delete All Contracts</button>
@@ -56,17 +67,22 @@
                         amount: 0,
                         current: 0,
                         deadline: new Date().toISOString().substr(0, 10)
-                    }
+                    },
+                    selectedColor: localStorage.getItem('palette') || 'red',
                 }
             },
             methods: {
+                savePalette(event) {
+                    const palette = event.target.value;
+                    localStorage.setItem('palette', palette);
+                    window.location.reload();
+                },
                 openModal() {
                     this.showCreateContractModal = true;
                 },
                 closeModal() {
                     this.showCreateContractModal = false;
                 },
-                
                 saveContract() {
                     // Convert contracts array to JSON string
                     const contractsJson = JSON.stringify(this.contracts);
