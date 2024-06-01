@@ -17,4 +17,4 @@ Currently, it just tracks challenges and looks neat. I will be updating it with 
 - And many more...?
 
 ###### Little Note
-I am using this project to learn Vue.js, and feedback is appreciated! I want to be the best I am able to, and I can only get better when I am told I am wrong. But please do try to be polite, I am new :) Thank you!
+###### I am using this project to learn Vue.js, and feedback is appreciated! I want to be the best I am able to, and I can only get better when I am told I am wrong. But please do try to be polite, I am new :) Thank you!

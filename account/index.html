@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Achievment Tracker</title>
+    <!-- Vue -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- Styles -->
+    <link rel="stylesheet" href="/styles/main.css">
+</head>
+<body data-theme="light-red">
+    <main>
+        <header>
+            <nav>
+                <ul>
+                    <li v-for="(page, index) in pages" :key="index">
+                        <a
+                        :class="{active: activePage == index}"
+                        :href="page.link.url"
+                        :title="`This link goes to ${page.link.text}`"
+                        >{{ page.link.text }}</a>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+        <div class="container" id="account-wrapper">
+            <h1>Account</h1>
+            <div style="display: flex; gap: 1rem;">
+                <button class="btn-accent" @click="exportContracts">Export Contracts</button>
+                <button class="btn-accent" @click="loadContracts">Load Contracts</button>
+                <button class="btn-accent" @click="deleteAllContracts">Delete All Contracts</button>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Data -->
+    <script>
+        // Grab contracts from browser storage
+        let contracts = localStorage.getItem('contracts');
+        if (contracts === null) {
+            contracts = [];
+        } else {
+            contracts = JSON.parse(contracts);
+        }
+
+        // Create a Vue instance
+        const account = Vue.createApp({
+            data() {
+                return {
+                    showCreateContractModal: false, // Initially hide the modal
+                    contracts: contracts,
+                    newContract: {
+                        name: '',
+                        description: '',
+                        amount: 0,
+                        current: 0,
+                        deadline: new Date().toISOString().substr(0, 10)
+                    }
+                }
+            },
+            methods: {
+                openModal() {
+                    this.showCreateContractModal = true;
+                },
+                closeModal() {
+                    this.showCreateContractModal = false;
+                },
+                
+                saveContract() {
+                    // Convert contracts array to JSON string
+                    const contractsJson = JSON.stringify(this.contracts);
+
+                    // Store contracts in browser local storage
+                    localStorage.setItem('contracts', contractsJson);
+                },
+                exportContracts() {
+                    const data = JSON.stringify(this.contracts);
+                    const blob = new Blob([data], {type: 'application/json'});
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'contracts.json';
+                    a.click();
+                },
+                loadContracts() {
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = '.json';
+                    input.onchange = (event) => {
+                        const file = event.target.files[0];
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            const data = JSON.parse(event.target.result);
+                            this.contracts = data;
+                            this.saveContract();
+                        };
+                        reader.readAsText(file);
+                    };
+                    input.click();
+                },
+                deleteAllContracts() {
+                    this.contracts = [];
+                    this.saveContract();
+                },
+            }
+        });
+
+        account.mount('#account-wrapper');
+    </script>
+    <!-- Header -->
+    <script>
+        let header = Vue.createApp({
+            data() {
+                return {
+                    activePage: 2,
+                    pages: [
+                        {
+                            link: {text: 'Home', url: '/'},
+                        },
+                        {
+                            link: {text: 'Track', url: '/track/'},
+                        },
+                        {
+                            link: {text: 'Account', url: '/account/'},
+                        },
+                    ],
+                };
+            }
+        })
+        
+        header.mount('header');
+    </script>
+    <!-- Scripts -->
+    <script src="/scripts/theme.js"></script>
+</body>
+</html>
