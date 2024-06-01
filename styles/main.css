@@ -84,6 +84,11 @@ div.container {
     margin: 0 auto;
 }
 
+div.simple-row {
+    display: flex;
+    gap: 1rem;
+}
+
 /* Modal */
 div.modal {
     position: fixed;
@@ -118,6 +123,17 @@ input[type="text"], input[type="number"], input[type="password"], input[type="em
     width: calc(100% - 1rem);
 }
 
+/* Dropdowns */
+select {
+    padding: 0.5rem;
+    border: 1px solid var(--color-accent);
+    border-radius: 7pt;
+    margin: 0.5rem 0;
+    display: block;
+    width: calc(100% - 1rem);
+}
+
+
 /* Buttons */
 button {
     padding: 0.5rem 1rem;
@@ -147,10 +163,18 @@ div.contract h2, div.contract p {
     margin: 0;
 }
 
-div.contract div.progress-bar {
+/* Progress Bar */
+progress {
+    border-radius: 7pt; 
     width: 100%;
-    margin-top: 1rem;
-}
-div.contract div.progress-bar progress {
-    width: 100% !important;
-}
+    height: 15px;
+    margin: 0.5rem 0;
+  }
+  progress::-webkit-progress-bar {
+    background-color: var(--color-light);
+    border-radius: 7pt;
+  }
+  progress::-webkit-progress-value {
+    background-color: var(--color-dark);
+    border-radius: 7pt;
+  }

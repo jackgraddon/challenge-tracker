@@ -39,7 +39,11 @@
                     <span>{{ contract.current }} / {{ contract.amount }}</span>
                     <progress :value="contract.current" :max="contract.amount"></progress>
                 </div>
-                <div style="display: flex; gap: 1rem;">
+                <div class="simple-row">
+                    <span>Deadline: {{ contract.deadline }}</span>
+                    <span>Tags: {{ contract.tags.join(', ') }}</span>
+                </div>
+                <div class="simple-row">
                     <button class="btn-bg" @click="editContract(index)">Edit Contract</button>
                     <button class="btn-bg" @click="removeContract(index)">Remove Contract</button>
                 </div>
@@ -68,7 +72,7 @@
                     v-model="newContract.deadline">
                     <label for="contract-tags">Tags</label>
                     <input type="text" name="contract-tags" id="contract-tags" v-model="newContract.tags" placeholder="Seperate,each tag,with a comma">
-                    <div style="display: flex; gap: 1rem;">
+                    <div class="simple-row">
                         <button class="btn-accent" @click="updateContract">Create</button>
                         <button class="btn-accent" @click="closeModal">Cancel</button>
                     </div>
