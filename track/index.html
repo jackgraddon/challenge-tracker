@@ -32,7 +32,7 @@
                 <h2>No Contracts</h2>
                 <p>There are no contracts to track. Click the button above to add a contract.</p>
             </div>
-            <div class="contract" v-for="(contract, index) in contracts" :key="index">
+            <div class="contract" v-for="(contract, index) in contracts" :key="index" :data-tags="contract.tags">
                 <h2>{{ contract.name }}</h2>
                 <p>{{ contract.description }}</p>
                 <div class="progress-bar">
@@ -41,7 +41,7 @@
                 </div>
                 <div class="simple-row">
                     <span>Deadline: {{ contract.deadline }}</span>
-                    <span>Tags: {{ contract.tags.join(', ') }}</span>
+                    <span>Tags: {{ contract.tags ? contract.tags.join(', ') : 'No tags available' }}</span>
                 </div>
                 <div class="simple-row">
                     <button class="btn-bg" @click="editContract(index)">Edit Contract</button>
@@ -104,7 +104,8 @@
                         current: 0,
                         deadline: new Date().toISOString().substr(0, 10),
                         tags: []
-                    }
+                    },
+                    selectedTags: [],
                 }
             },
             methods: {
@@ -185,7 +186,18 @@
                     // Store contracts in browser local storage
                     localStorage.setItem('contracts', contractsJson);
                 }
-            }
+            },
+            computed: {
+                filteredContracts() {
+                    if (this.selectedTags.length === 0) {
+                        return this.contracts; // No tags selected, return all contracts
+                    }
+                    return this.contracts.filter(contract => {
+                        const contractTags = this.parsedTags(contract.tags);
+                        return this.selectedTags.every(tag => contractTags.includes(tag));
+                    });
+                },
+            },
         });
 
         tracker.mount('#tracker-wrapper');
